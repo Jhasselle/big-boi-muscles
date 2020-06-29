@@ -3,77 +3,76 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import Store from '../stores/Store';
 
-export function Home({navigation}) {
-  const [store] = useState(Store.getInstance('Home'));
-  // const [workouts, setWorkouts] = useState([])
-  // const [exercises, setExercises] = useState([])
+export function Home({ navigation }) {
 
-  // Dummy data
-  const workouts = [
-    {'uuid':'1', 'name':'push', 'last_workout': 100, 'exercise_reference_array':[1,2,3], 'workout_days_array':['sunday']},
-    {'uuid':'2', 'name':'pull', 'last_workout': 99, 'exercise_reference_array':[4,5,6], 'workout_days_array':['tuesday']},
-    {'uuid':'3', 'name':'legs', 'last_workout': 98, 'exercise_reference_array':[7,8,9], 'workout_days_array':['thursday']}
-  ];
+    const store = Store.getInstance('Home')
+    const [workouts, setWorkouts] = useState(null)
 
-  useEffect(()=>{
-  })
-
-  const addWorkoutButtonOnPress = () => {
-    console.log('addWorkoutButtonOnPress')
-  }
-
-  return (
-    <View style={styles.container}>
-      <Text>UwU  Home  UwU </Text>
-        <View style={styles.workoutView}>
-          <ScrollView>
-            { workouts ? 
-                workouts.map((workout) =>
-                  <WorkoutButton 
-                    workout={workout} 
-                    navigation={navigation}
-                    key={workout.uuid} 
-                  />
-                )
-                : null
+    useEffect(() => {
+        navigation.addListener(
+            'willFocus',
+            () => {
+                store.getAllWorkouts(setWorkouts)
             }
-            <Button onPress={addWorkoutButtonOnPress}>
-              Add Workout
+        );
+        store.getAllWorkouts(setWorkouts)
+    }, [navigation])
+
+    const navigateToNewWorkout = () => {
+        navigation.navigate('NewWorkout')
+    }
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.workoutView}>
+                <ScrollView>
+                    {workouts && workouts.length > 0 ?
+                        workouts.map((workout) =>
+                            <WorkoutButton
+                                workout={workout}
+                                navigation={navigation}
+                                key={workout.uuid}
+                            />
+                        )
+                        : <Text>no werkouts</Text>
+                    }
+                    <Button onPress={navigateToNewWorkout}>
+                        Add Workout
             </Button>
-          </ScrollView>
+                </ScrollView>
+            </View>
+
         </View>
-      
-    </View>
-  );
+    );
 }
 
-export function WorkoutButton({workout, navigation}) {
+export function WorkoutButton({ workout, navigation }) {
 
-  const navigateToPreWorkout = () => {
-    // console.log('go to workout', workout.name, workout.uuid)
-    navigation.navigate('PreWorkout', {workout})
-  }
+    const navigateToPreWorkout = () => {
+        // console.log('go to workout', workout.name, workout.uuid)
+        navigation.navigate('PreWorkout', { workout })
+    }
 
-  return (
-    <View style={{flex:1}}>
-      <Button onPress={navigateToPreWorkout}>
-        {workout.name}
-      </Button>
-    </View>
-  )
+    return (
+        <View style={{ flex: 1 }}>
+            <Button onPress={navigateToPreWorkout}>
+                {workout.name}
+            </Button>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  workoutView: {
-    flex: 1,
-    backgroundColor: '#65a7e0',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#aaafff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    workoutView: {
+        flex: 1,
+        backgroundColor: '#65a7e0',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });
