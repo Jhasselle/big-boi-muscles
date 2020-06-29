@@ -24,7 +24,7 @@ export function Home({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Text>UwU UwU Home UwU UwU </Text>
+      <Text>UwU  Home  UwU </Text>
         <View style={styles.workoutView}>
           <ScrollView>
             { workouts ? 
