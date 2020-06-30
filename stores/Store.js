@@ -77,12 +77,12 @@ export default class Store {
             tx.executeSql("create table if not exists exercises (\
                 id integer primary key not null,\
                 uuid text,\
+                workout_uuid,\
                 name text,\
                 weight int, \
                 num_of_sets int, \
                 num_of_reps int, \
                 equipment_photo_reference text,\
-                num_of_rests int,\
                 seconds_of_rest int\
                 );",
                 []
@@ -95,15 +95,14 @@ export default class Store {
             tx.executeSql(
                 `select * from workouts;`,
                 [],
-                (_, { rows: { _array } }) => { 
-                    callback(_array); 
+                (_, { rows: { _array } }) => {
+                    callback(_array);
                 }
             );
         });
     }
 
     createWorkout = async (workout_name, callback) => {
-
         const new_uuid = uuid()
         db.transaction(tx => {
             tx.executeSql('insert into workouts (uuid, name) values (?, ?);',
@@ -122,18 +121,36 @@ export default class Store {
         });
     }
 
-    createExercise = async (workout_uuid, callback) => {
-        // db.transaction(tx => {
-        //     tx.executeSql(
-        //         `select * from workouts;`,
-        //         [],
-        //         (_, { rows: { _array } }) => { 
-        //             callback(_array); 
-        //         }
-        //     );
-        // });
+    getExercises = async (workoutUUID, callback) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                `select * from exercises where workout_uuid=?;`,
+                [workoutUUID],
+                (_, { rows: { _array } }) => {
+                    callback(_array);
+                }
+            );
+        });
     }
 
+    createExercise = async (workoutUUID, exerciseName, exerciseWeight, exerciseReps, exerciseSets, exerciseRest, callback) => {
+        const new_uuid = uuid()
+        db.transaction(tx => {
+            tx.executeSql('insert into exercises (uuid, workout_uuid, name, weight, num_of_sets, num_of_reps, seconds_of_rest)\
+                 values (?, ?, ?, ?, ?, ?, ?);',
+                [new_uuid, workoutUUID, exerciseName, exerciseWeight, exerciseSets, exerciseReps, exerciseRest],
+                Store.success,
+                (_, error) => { console.log(error); }
+            );
+            tx.executeSql(
+                `select * from exercises where workout_uuid=?;`,
+                [workoutUUID],
+                (_, { rows: { _array } }) => {
+                    callback(_array);
+                }
+            );
+        });
+    }
 
     nukeDatabase = async () => {
         console.log('Nuking Database...')

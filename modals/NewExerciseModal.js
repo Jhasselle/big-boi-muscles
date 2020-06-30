@@ -11,13 +11,17 @@ export function NewExerciseModal({modalVisible, setModalVisible, addExercise}) {
     const [exerciseWeight, setExerciseWeight] = useState('');
     const [exerciseReps, setExerciseReps] = useState('');
     const [exerciseSets, setExerciseSets] = useState('');
-    const [exerciseRest, setExerciseRest] = useState('')
+    const [exerciseRest, setExerciseRest] = useState('');
 
-    const textInputRef = useRef(null);
+    const textNameRef = useRef(null);
+    const textWeightRef = useRef(null);
+    const textRepsRef = useRef(null);
+    const textSetsRef = useRef(null);
+    const textTimeRef = useRef(null);
 
     const addExerciseWrapper = () => {
+        addExercise(exerciseName, exerciseWeight, exerciseReps, exerciseSets, exerciseRest)
         clearInputFields()
-        addExercise()
     }
 
     const closeMenu = () => {
@@ -41,34 +45,47 @@ export function NewExerciseModal({modalVisible, setModalVisible, addExercise}) {
             onBackdropPress={closeMenu}
             contentContainerStyle={styles.modal}
             backdropOpacity={0.7}
-            onShow={()=>textInputRef.current.focus()}
+            onShow={()=>textNameRef.current.focus()}
         >
             <View style={{flexGrow: 1, margin: 50, paddingTop:30, backgroundColor:'white', borderRadius:30}}>
                 <TextInput 
-                    ref={textInputRef}
+                    ref={textNameRef}
                     label='Exercise Name'
                     value={exerciseName}
                     onChangeText={exerciseName => setExerciseName(exerciseName)}
+                    blurOnSubmit={false}
+                    onSubmitEditing={()=>textWeightRef.current.focus()}
                 />
                 <TextInput 
+                    ref={textWeightRef}
                     label='Weight'
                     value={exerciseWeight}
                     onChangeText={exerciseWeight => setExerciseWeight(exerciseWeight)}
+                    blurOnSubmit={false}
+                    onSubmitEditing={()=>textRepsRef.current.focus()}
                 />
                 <TextInput 
+                    ref={textRepsRef}
                     label='Number of Reps'
                     value={exerciseReps}
                     onChangeText={exerciseReps => setExerciseReps(exerciseReps)}
+                    blurOnSubmit={false}
+                    onSubmitEditing={()=>textSetsRef.current.focus()}
                 />
                 <TextInput 
+                    ref={textSetsRef}
                     label='Number of Sets'
                     value={exerciseSets}
                     onChangeText={exerciseSets => setExerciseSets(exerciseSets)}
+                    blurOnSubmit={false}
+                    onSubmitEditing={()=>textTimeRef.current.focus()}
                 />
                 <TextInput 
+                    ref={textTimeRef}
                     label='Rest Time Between Sets'
                     value={exerciseRest}
                     onChangeText={exerciseRest => setExerciseRest(exerciseRest)}
+                    // blurOnSubmit={false}
                 />
                 <Button onPress={addExerciseWrapper}> OK boomer </Button>
                 <Button onPress={closeMenu}>Cancel</Button>

@@ -9,6 +9,7 @@ export function Home({ navigation }) {
     const [workouts, setWorkouts] = useState(null)
 
     useEffect(() => {
+        // store.nukeDatabase()
         navigation.addListener(
             'willFocus',
             () => {
@@ -40,6 +41,7 @@ export function Home({ navigation }) {
                         Add Workout
             </Button>
                 </ScrollView>
+                <Button onPress={()=>store.nukeDatabase()}>nuke</Button>
             </View>
 
         </View>
@@ -48,14 +50,14 @@ export function Home({ navigation }) {
 
 export function WorkoutButton({ workout, navigation }) {
 
-    const navigateToPreWorkout = () => {
-        // console.log('go to workout', workout.name, workout.uuid)
-        navigation.navigate('PreWorkout', { workout })
+    const navigateToExercises = () => {
+        navigation.navigate('Exercises', {'name': workout.name, 'uuid': workout.uuid, 'newWorkout': false})
+
     }
 
     return (
         <View style={{ flex: 1 }}>
-            <Button onPress={navigateToPreWorkout}>
+            <Button onPress={navigateToExercises}>
                 {workout.name}
             </Button>
         </View>

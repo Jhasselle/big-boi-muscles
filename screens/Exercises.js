@@ -5,38 +5,52 @@ import { NewExerciseModal } from '../modals/NewExerciseModal';
 import Store from '../stores/Store';
 
 // For adding or editting exercises of a workout
-export function NewExercise({navigation}) {
+export function Exercises({ navigation }) {
 
     const store = Store.getInstance()
+    const isNewWorkout = navigation.state.params.newWorkout
     const workoutName = navigation.state.params.name
     const workoutUUID = navigation.state.params.uuid
-
-    useEffect(()=>{
-        // console.log(navigation.state.params)
-    })
-
-    const [modalVisible, setModalVisible] = useState(true)
+    const [modalVisible, setModalVisible] = useState(isNewWorkout)
     const [exercises, setExercises] = useState([])
 
-    const addExercise = () => {
+    useEffect(() => {
+        store.getExercises(workoutUUID, setExercises)
+    }, [navigation])
 
-        setModalVisible(false);
+    const addExercise = (exerciseName, exerciseWeight, exerciseReps, exerciseSets, exerciseRest) => {
+        store.createExercise(workoutUUID, exerciseName, exerciseWeight, exerciseReps, exerciseSets, exerciseRest, setExercises)
+        setModalVisible(false)
+    }
+
+    const navigateToWorkout = () => {
+        navigation.navigate('Workout', {'workout_uuid': workoutUUID, 'exercises': exercises})
     }
 
     return (
-        <View style={{flex: 1, paddingTop:30, backgroundColor:'#847692'}}>
+        <View style={{ flex: 1, paddingTop: 30, backgroundColor: '#847692' }}>
 
             <NewExerciseModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 addExercise={addExercise}
             />
-            <Text>Exercises of {workoutName} {workoutUUID}</Text>
+            <Text>Exercises of {workoutName}</Text>
+
             <ScrollView>
-                <Button onPress={()=>setModalVisible(true)}>
+                {exercises && exercises.length > 0
+                    ? exercises.map((exercise) =>
+                        <Text>{exercise.name}</Text>
+                    )
+                    : <Text>empty</Text>
+                }
+                <Button onPress={() => setModalVisible(true)}>
                     Add Exercise
                 </Button>
             </ScrollView>
+            <Button onPress={navigateToWorkout}>
+                Start Werkout
+            </Button>
             <Button></Button>
         </View>
     );

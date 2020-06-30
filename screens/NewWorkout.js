@@ -7,8 +7,9 @@ import Store from '../stores/Store';
 export function NewWorkout({navigation}) {
 
     const store = Store.getInstance();
-    const [workoutName, setWorkoutName] = useState('')
-    const [workoutID, setWorkoutID] = useState(null)
+    const [workoutName, setWorkoutName] = useState('');
+    const [workoutID, setWorkoutID] = useState(null);
+    const textInputRef = useRef(null);
 
     // Activates upon receiving new workout uuid
     useEffect(()=>{
@@ -27,16 +28,18 @@ export function NewWorkout({navigation}) {
     }
 
     const navigateToNewExercise = () => {
-        navigation.navigate('NewExercise', {'name': workoutName, 'uuid': workoutID})
+        navigation.navigate('Exercises', {'name': workoutName, 'uuid': workoutID, 'newWorkout': true})
     }
 
     return (
         <View style={{flex: 1, paddingTop:30, backgroundColor:'#847692'}}>
 
             <TextInput 
+                ref={textInputRef}
                 label='Workout Name'
                 value={workoutName}
                 onChangeText={workoutName => setWorkoutName(workoutName)}
+                autoFocus
             />
 
             <Text>Select Repeating Days</Text>

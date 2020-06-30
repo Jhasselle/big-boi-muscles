@@ -7,7 +7,7 @@ import { NewWorkout } from './screens/NewWorkout';
 import { PreWorkout } from './screens/PreWorkout';
 import { Workout } from './screens/Workout';
 import { PostWorkout } from './screens/PostWorkout';
-import { NewExercise } from './screens/NewExercise';
+import { Exercises } from './screens/Exercises';
 import { Provider as PaperProvider, DarkTheme } from 'react-native-paper';
 
 const AppNavigator = createStackNavigator({
@@ -53,11 +53,11 @@ const AppNavigator = createStackNavigator({
       headerTitle: ""
     }
   },
-  NewExercise: {
-    screen: NewExercise,
+  Exercises: {
+    screen: Exercises,
     navigationOptions: {
-      headerShown: false,
-      headerTitle: "Add Exercises"
+      headerShown: true,
+      headerTitle: "Pre-Workout"
     }
   },
 },
