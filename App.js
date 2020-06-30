@@ -3,9 +3,11 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { Loading } from './screens/Loading';
 import { Home } from './screens/Home';
+import { NewWorkout } from './screens/NewWorkout';
 import { PreWorkout } from './screens/PreWorkout';
 import { Workout } from './screens/Workout';
 import { PostWorkout } from './screens/PostWorkout';
+import { Exercises } from './screens/Exercises';
 import { Provider as PaperProvider, DarkTheme } from 'react-native-paper';
 
 const AppNavigator = createStackNavigator({
@@ -21,6 +23,13 @@ const AppNavigator = createStackNavigator({
     navigationOptions: {
       headerShown: true,
       headerTitle: "Big Muscle Boi App"
+    }
+  },
+  NewWorkout: {
+    screen: NewWorkout,
+    navigationOptions: {
+      headerShown: true,
+      headerTitle: "New Workout"
     }
   },
   PreWorkout: {
@@ -42,6 +51,13 @@ const AppNavigator = createStackNavigator({
     navigationOptions: {
       headerShown: false,
       headerTitle: ""
+    }
+  },
+  Exercises: {
+    screen: Exercises,
+    navigationOptions: {
+      headerShown: true,
+      headerTitle: "Pre-Workout"
     }
   },
 },
