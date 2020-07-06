@@ -4489,6 +4489,13 @@ react-native-screens@~2.2.0:
   dependencies:
     debounce "^1.2.0"
 
+react-native-stopwatch-timer@^0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/react-native-stopwatch-timer/-/react-native-stopwatch-timer-0.0.21.tgz#52c39f603e36c538bed3466212b1bfb350ed452f"
+  integrity sha512-qFFsD85NkBT1nxo32HMGq3XAtQyMC09p9ZDIEuOED2BOxgs0UpWg/FSTA0MmEoIKMyXUwSE5VxEzBaGP3z1HFw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-view-shot@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-3.1.2.tgz#8c8e84c67a4bc8b603e697dbbd59dbc9b4f84825"

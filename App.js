@@ -9,6 +9,8 @@ import { Workout } from './screens/Workout';
 import { PostWorkout } from './screens/PostWorkout';
 import { Exercises } from './screens/Exercises';
 import { Provider as PaperProvider, DarkTheme } from 'react-native-paper';
+import { SessionProvider } from './context/SessionContext';
+
 
 const AppNavigator = createStackNavigator({
   Loading: {
@@ -71,7 +73,9 @@ const AppNavigationContainer = createAppContainer(AppNavigator);
 const App = () => {
   return (
     <PaperProvider>
+      <SessionProvider>
         <AppNavigationContainer/>
+      </SessionProvider>
     </PaperProvider>
   );
 }

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { View, Dimensions, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Button, Text, TextInput, Colors } from 'react-native-paper';
 import { NewExerciseModal } from '../modals/NewExerciseModal';
+import { SessionContext } from '../context/SessionContext';
 import Store from '../stores/Store';
 
 // For adding or editting exercises of a workout
@@ -14,6 +15,9 @@ export function Exercises({ navigation }) {
     const [modalVisible, setModalVisible] = useState(isNewWorkout)
     const [exercises, setExercises] = useState([])
 
+    // Context
+    const [session, setSession] = useContext(SessionContext)
+
     useEffect(() => {
         store.getExercises(workoutUUID, setExercises)
     }, [navigation])
@@ -23,9 +27,15 @@ export function Exercises({ navigation }) {
         setModalVisible(false)
     }
 
+    const startNewSession = async () => {
+        store.createSession(workoutUUID, exercises, setSession, navigateToWorkout)
+    }
+
     const navigateToWorkout = () => {
         navigation.navigate('Workout', {'workout_uuid': workoutUUID, 'exercises': exercises})
     }
+
+
 
     return (
         <View style={{ flex: 1, paddingTop: 30, backgroundColor: '#847692' }}>
@@ -40,7 +50,7 @@ export function Exercises({ navigation }) {
             <ScrollView>
                 {exercises && exercises.length > 0
                     ? exercises.map((exercise) =>
-                        <Text>{exercise.name}</Text>
+                        <Text key={exercise.name}>{exercise.name}</Text>
                     )
                     : <Text>empty</Text>
                 }
@@ -48,7 +58,7 @@ export function Exercises({ navigation }) {
                     Add Exercise
                 </Button>
             </ScrollView>
-            <Button onPress={navigateToWorkout}>
+            <Button onPress={startNewSession}>
                 Start Werkout
             </Button>
             <Button></Button>

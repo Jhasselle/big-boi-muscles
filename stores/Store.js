@@ -69,8 +69,8 @@ export default class Store {
                 uuid text,\
                 name text,\
                 last_workout int,\
-                exercise_reference_array text,\
-                workout_days_array text \
+                exercise_uuid_json_array text,\
+                workout_days_json_array text \
                 );",
                 []
             );
@@ -83,7 +83,17 @@ export default class Store {
                 num_of_sets int, \
                 num_of_reps int, \
                 equipment_photo_reference text,\
-                seconds_of_rest int\
+                ms_of_rest int\
+                );",
+                []
+            );
+            tx.executeSql("create table if not exists sessions (\
+                id integer primary key not null,\
+                uuid text,\
+                workout_uuid,\
+                exercises_json_array text,\
+                start_time int,\
+                end_time int\
                 );",
                 []
             );
@@ -136,7 +146,7 @@ export default class Store {
     createExercise = async (workoutUUID, exerciseName, exerciseWeight, exerciseReps, exerciseSets, exerciseRest, callback) => {
         const new_uuid = uuid()
         db.transaction(tx => {
-            tx.executeSql('insert into exercises (uuid, workout_uuid, name, weight, num_of_sets, num_of_reps, seconds_of_rest)\
+            tx.executeSql('insert into exercises (uuid, workout_uuid, name, weight, num_of_sets, num_of_reps, ms_of_rest)\
                  values (?, ?, ?, ?, ?, ?, ?);',
                 [new_uuid, workoutUUID, exerciseName, exerciseWeight, exerciseSets, exerciseReps, exerciseRest],
                 Store.success,
@@ -152,13 +162,48 @@ export default class Store {
         });
     }
 
+    createSession = async (workout_uuid, exercises, setSession, navigateToWorkout) => {
+        const new_uuid = uuid();
+        const new_date = Date.now();
+        db.transaction(tx => {
+            tx.executeSql('insert into sessions (uuid, workout_uuid, exercises_json_array, start_time, end_time)\
+                 values (?, ?, ?, ?, ?);',
+                [new_uuid, workout_uuid, JSON.stringify(exercises), new_date, new_date],
+                Store.success,
+                (_, error) => { console.log(error); }
+            );
+            tx.executeSql(
+                `select * from sessions where uuid=?;`,
+                [new_uuid],
+                (_, { rows: { _array } }) => {
+                    let exercises = JSON.parse(_array[0].exercises_json_array);
+                    this.formatExercisesForSession(exercises);
+                    _array[0].exercises_json_array = exercises;
+                    setSession(_array[0]);
+                    navigateToWorkout()
+                }
+            );
+        });
+    }
+
+    // If complete, move on
+    // if complete and skipped, skip for the day
+    // if !complete and skipped, wrap back to exercise at end of workout
+    
+    formatExercisesForSession = (exercises) => {
+        for (var i = 0; i < exercises.length; i++) {
+            exercises[i].complete = false;
+            exercises[i].skipped = false;
+        }
+    }
+
     nukeDatabase = async () => {
         console.log('Nuking Database...')
         db.transaction(tx => {
             tx.executeSql("drop table if exists app_metadata;");
             tx.executeSql("drop table if exists workouts;");
             tx.executeSql("drop table if exists exercises;");
-
+            tx.executeSql("drop table if exists sessions;");
         });
         await AsyncStorage.clear();
     }
